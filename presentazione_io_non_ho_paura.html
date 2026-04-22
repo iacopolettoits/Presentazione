@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Io non ho paura — Presentazione Orale</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #b8975a;
+    --dark: #0d0c0a;
+    --cream: #f5f0e8;
+    --warm-gray: #9a9189;
+    --rust: #8b3a2a;
+    --accent-light: #e8dfc8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--dark);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    line-height: 1.75;
+    font-size: 18px;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* COVER */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    background: radial-gradient(ellipse at 50% 30%, #1a1710 0%, var(--dark) 70%);
+    border-bottom: 1px solid rgba(184,151,90,0.2);
+    overflow: hidden;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .cover-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .cover-title {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .cover-author {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .cover-meta {
+    font-size: 0.95rem;
+    color: var(--warm-gray);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .divider-gold {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+
+  /* NAVIGATION */
+  .toc {
+    background: rgba(255,255,255,0.02);
+    border-top: 1px solid rgba(184,151,90,0.15);
+    border-bottom: 1px solid rgba(184,151,90,0.15);
+    padding: 3rem 2rem;
+  }
+
+  .toc-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .toc-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.5rem 2rem;
+  }
+
+  .toc-list li a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: var(--warm-gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-style: italic;
+    transition: color 0.3s;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .toc-list li a:hover { color: var(--gold); }
+
+  .toc-num {
+    font-style: normal;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    color: var(--gold);
+    opacity: 0.6;
+    min-width: 1.5rem;
+  }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 5rem 0 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  /* PARAGRAPHS */
+  p {
+    color: rgba(245,240,232,0.82);
+    margin-bottom: 1.4rem;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    text-align: justify;
+  }
+
+  /* QUOTE BLOCKS */
+  .quote-block {
+    border-left: 2px solid var(--gold);
+    margin: 2.5rem 0;
+    padding: 1.2rem 1.8rem;
+    background: rgba(184,151,90,0.06);
+    position: relative;
+  }
+
+  .quote-block p {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--accent-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .quote-source {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-style: normal;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  /* DIALOGUE */
+  .dialogue-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2px;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 2;
+    color: var(--accent-light);
+  }
+
+  .dialogue-block strong {
+    font-style: normal;
+    color: var(--gold);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  /* HIGHLIGHT BOXES */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(184,151,90,0.08) 0%, rgba(139,58,42,0.08) 100%);
+    border-top: 1px solid rgba(184,151,90,0.3);
+    border-bottom: 1px solid rgba(184,151,90,0.3);
+    padding: 2rem 2.5rem;
+    margin: 3rem 0;
+  }
+
+  .highlight-box .hl-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .highlight-box p {
+    font-size: 1.05rem;
+    color: var(--accent-light);
+    margin-bottom: 0;
+  }
+
+  /* EXTRAS */
+  .extras {
+    background: rgba(139,58,42,0.1);
+    border: 1px solid rgba(139,58,42,0.25);
+    margin-top: 4rem;
+    padding: 3rem 2.5rem;
+  }
+
+  .extras-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 2.5rem;
+    display: block;
+  }
+
+  .qa-item {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .qa-item:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .qa-q {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .qa-q::before {
+    content: 'D.';
+    font-style: normal;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--rust);
+    padding-top: 0.2rem;
+    min-width: 1.5rem;
+  }
+
+  .qa-a {
+    color: rgba(245,240,232,0.8);
+    font-size: 1rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .phrases-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .phrase-card {
+    background: rgba(0,0,0,0.3);
+    border-left: 3px solid var(--gold);
+    padding: 1.2rem 1.5rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--accent-light);
+    line-height: 1.5;
+  }
+
+  /* TIMING */
+  .timing-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(184,151,90,0.06);
+    border: 1px solid rgba(184,151,90,0.15);
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    color: var(--warm-gray);
+  }
+
+  .timing-icon {
+    font-size: 1.2rem;
+  }
+
+  .timing-text strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: rgba(154,145,137,0.4);
+    font-size: 0.8rem;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; color: #1a1a1a; }
+    .cover { background: #f5f0e8; min-height: auto; padding: 2rem; }
+    .cover-title { color: #1a1a1a; font-size: 2.5rem; }
+    .cover-author, .cover-label, .section-number { color: #8b6914; }
+    .section-title { color: #1a1a1a; }
+    p { color: #2a2520; }
+    .highlight-box, .quote-block { background: #f9f5ec; }
+    body::before { display: none; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <p class="cover-label">Presentazione Orale di Letteratura Italiana</p>
+  <h1 class="cover-title">Io non ho paura</h1>
+  <div class="divider-gold"></div>
+  <p class="cover-author">Niccolò Ammaniti</p>
+  <p class="cover-meta">Einaudi, 2001 &nbsp;·&nbsp; Durata stimata: 9–10 minuti</p>
+</div>
+
+<!-- INDICE -->
+<div class="toc">
+  <div class="toc-inner">
+    <p class="toc-title">Indice della presentazione</p>
+    <ul class="toc-list">
+      <li><a href="#intro"><span class="toc-num">I.</span>Introduzione e tesi interpretativa</a></li>
+      <li><a href="#struttura"><span class="toc-num">II.</span>Struttura narrativa e tempo</a></li>
+      <li><a href="#stile"><span class="toc-num">III.</span>Tratti stilistici di Ammaniti</a></li>
+      <li><a href="#personaggio"><span class="toc-num">IV.</span>Analisi di Michele Amitrano</a></li>
+      <li><a href="#dialogo"><span class="toc-num">V.</span>Analisi di un dialogo significativo</a></li>
+      <li><a href="#brano"><span class="toc-num">VI.</span>Analisi del brano scelto</a></li>
+      <li><a href="#conclusione"><span class="toc-num">VII.</span>Conclusione</a></li>
+      <li><a href="#extra"><span class="toc-num">+</span>Domande e frasi ad effetto</a></li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+  <!-- I. INTRODUZIONE -->
+  <section class="section reveal" id="intro">
+    <span class="section-number">Sezione I · ~45 secondi</span>
+    <h2 class="section-title">Introduzione e tesi interpretativa</h2>
+
+    <p><em>Io non ho paura</em> di Niccolò Ammaniti, pubblicato da Einaudi nel 2001, è uno dei romanzi più significativi della narrativa italiana contemporanea. L'opera si colloca all'interno della cosiddetta corrente del "Gruppo Cannibale", di cui Ammaniti fu tra i promotori negli anni Novanta, pur segnando rispetto ad essa un'evoluzione verso toni più maturi e moralmente complessi.</p>
+
+    <p>Il romanzo è ambientato nell'estate del 1978 — definita dallo stesso narratore come «una delle più calde del secolo» — in un minuscolo borgo rurale del Sud Italia, Acqua Traverse, dove nove bambini vivono una quotidianità povera e bruciata dal sole. La storia è narrata in prima persona da Michele Amitrano, un bambino di nove anni, la cui voce ingenua diventa lo strumento attraverso cui Ammaniti articola la sua riflessione più profonda sul confine tra innocenza e corruzione, tra mondo infantile e mondo adulto.</p>
+
+    <div class="highlight-box">
+      <span class="hl-title">Tesi interpretativa</span>
+      <p>La tesi che intendo sostenere in questa presentazione è che <em>Io non ho paura</em> funziona come una <strong>parabola morale sull'innocenza come resistenza</strong>: la purezza dello sguardo infantile di Michele non è soltanto un elemento narrativo, ma il valore etico contrapposto alla complicità cinica e alla codardia del mondo adulto. Il romanzo racconta, in sostanza, come la coscienza si formi attraverso l'incontro con l'orrore — e come la scelta di non cedere a quell'orrore sia l'unico gesto autenticamente umano.</p>
+    </div>
+  </section>
+
+  <!-- II. STRUTTURA NARRATIVA -->
+  <section class="section reveal" id="struttura">
+    <span class="section-number">Sezione II · ~90 secondi</span>
+    <h2 class="section-title">Struttura narrativa e gestione del tempo</h2>
+
+    <p>Dal punto di vista strutturale, il romanzo si articola in dieci capitoli numerati progressivamente, senza titoli, in un andamento volutamente lineare che rispecchia la percezione temporale tipica dell'infanzia: il presente assoluto, l'estate che sembra non finire mai. La struttura è sostanzialmente <strong>cronologica</strong>, con il tempo della storia coincidente — quasi senza ellissi significative — con il tempo del racconto durante le giornate decisive della vicenda.</p>
+
+    <p>Ammaniti adotta tuttavia alcuni meccanismi di distorsione temporale funzionali alla caratterizzazione del narratore. Il più rilevante è la <strong>prolepsi</strong> — l'anticipazione narrativa — con cui Michele adulto, parlando retrospettivamente, inserisce brevi scorci dal futuro, come il racconto dell'episodio sulla seggiovia innevata del Gran Sasso, quando il narratore ha diciannove anni. Questi interventi non spezzano il ritmo, ma creano un sottile sdoppiamento temporale: chi racconta non è solo il bambino, ma anche il giovane che porta con sé le cicatrici di quell'estate.</p>
+
+    <p>Il <strong>ritmo narrativo</strong> è particolarmente efficace: lento e sensoriale nei passaggi descrittivi — quasi ogni capitolo si apre con un'evocazione del calore, del grano, della luce accecante — si fa improvvisamente frenetico nelle sequenze d'azione, come la corsa notturna verso la fattoria di Melichetti o la discesa nel buco. Questo alternare di dilatazione e accelerazione non è casuale: riflette la struttura emotiva del romanzo, che oscilla tra la monotonia soffocante di Acqua Traverse e l'irruzione del perturbante.</p>
+
+    <div class="quote-block">
+      <p>«Ogni cosa era coperta di grano. Le colline, basse, si susseguivano come onde di un oceano dorato. Fino in fondo all'orizzonte grano, cielo, grilli, sole e caldo.»</p>
+      <span class="quote-source">Cap. 1 — incipit della descrizione paesaggistica</span>
+    </div>
+
+    <p>In questo passo si vede chiaramente come il paesaggio abbia una funzione narrativa precisa: è una presenza ossessiva che circonda e isola, rendendo Acqua Traverse un luogo fuori dal tempo e dalla storia — il che ne fa, simbolicamente, lo sfondo ideale per una vicenda senza via di fuga.</p>
+  </section>
+
+  <!-- III. STILE -->
+  <section class="section reveal" id="stile">
+    <span class="section-number">Sezione III · ~90 secondi</span>
+    <h2 class="section-title">Tratti stilistici di Ammaniti</h2>
+
+    <p>Lo stile di Ammaniti in questo romanzo è costruito su una tensione deliberata tra <strong>semplicità sintattica e profondità tematica</strong>. Il lessico è povero, scelto con cura per risultare credibile alla voce di un bambino di nove anni: non si trovano subordinate elaborate né vocaboli ricercati. La sintassi è paratattica — prevalentemente coordinata, con frasi brevi, spesso nominali, che conferiscono alla narrazione un ritmo secco e incalzante.</p>
+
+    <p>Il <strong>registro linguistico</strong> è quello del parlato, con una forte impronta meridionale che emerge nelle espressioni idiomatiche, nell'oralità dei dialoghi, nel rispetto delle gerarchie infantili all'interno della banda. Ammaniti evita ogni lirismo convenzionale: quando la prosa si fa poetica — e accade — è perché la meraviglia di Michele davanti al mondo è autentica, non costruita.</p>
+
+    <div class="quote-block">
+      <p>«In certi momenti il cervello gioca brutti scherzi.»</p>
+      <span class="quote-source">Voce narrante di Michele</span>
+    </div>
+
+    <p>Tra le <strong>figure retoriche</strong> dominanti spiccano la similitudine e la metafora di origine concreta e visiva. Michele non ha un vocabolario astratto per descrivere il mondo: lo paragona a ciò che conosce — gli animali, la televisione, i fumetti di Tex Willer, le corse in bicicletta. Questa strategia ha un duplice effetto: da un lato caratterizza il narratore in maniera credibile, dall'altro crea un paradosso stilistico efficacissimo, perché attraverso immagini apparentemente ingenue Ammaniti riesce a toccare temi di grande spessore.</p>
+
+    <p>Il <strong>tono dominante</strong> oscilla tra il registro favolistico — con gli orchi, le streghe, Tiger Jack — e quello realistico, quasi documentaristico nella descrizione della miseria sociale del Sud. Questa coesistenza di registro fiabesco e cronaca produce il senso d'inquietudine che permea il testo: il romanzo somiglia a una favola, ma è una favola dove il mostro non è un'invenzione dell'immaginazione infantile.</p>
+  </section>
+
+  <!-- IV. PERSONAGGIO -->
+  <section class="section reveal" id="personaggio">
+    <span class="section-number">Sezione IV · ~2 minuti</span>
+    <h2 class="section-title">Analisi del personaggio: Michele Amitrano</h2>
+
+    <p>Michele Amitrano è uno dei personaggi più riusciti della narrativa italiana degli ultimi decenni. A prima lettura sembra soltanto il narratore: un bambino di nove anni, terzo nella gerarchia della banda locale, figlio di una famiglia povera, fratello maggiore della piccola Maria. Ma nel corso del romanzo Michele si rivela come il <strong>vero centro morale dell'opera</strong>.</p>
+
+    <p>Dal punto di vista psicologico, Michele è caratterizzato da tre qualità fondamentali che si sviluppano progressivamente: la <strong>curiosità</strong>, il <strong>coraggio</strong> e la <strong>fedeltà</strong>. La curiosità lo spinge nella casa abbandonata, a scendere nel buco, a tornare ancora e ancora da Filippo contro ogni ragione pratica. Il coraggio non è mai esibito — Michele ha paura, lo ammette apertamente, e la sua paura è descritta con precisione quasi fisiologica — ma lo supera. La fedeltà, infine, è il tratto che lo distingue radicalmente dagli adulti che lo circondano: Michele mantiene le promesse, anche a costo della propria vita.</p>
+
+    <div class="quote-block">
+      <p>«Io non ho paura di niente» — sussurra per farsi coraggio, mentre le gambe gli cedono.</p>
+      <span class="quote-source">Cap. 3 — prima discesa nel buco</span>
+    </div>
+
+    <p>Questa frase — che dà il titolo al romanzo — non è un'affermazione di forza, ma di volontà. Michele ha paura: del buio, dei morti, degli orchi, dei maiali, dei grandi. La dichiarazione è un atto performativo: lui si dice che non ha paura per riuscire ad agire nonostante la paura. È una forma di eroismo infantile, autentico e commovente.</p>
+
+    <p>L'<strong>evoluzione del personaggio</strong> è la parabola del romanzo. All'inizio Michele è un bambino che obbedisce alle regole della banda, che ammira il padre incondizionatamente, che ignora il significato di ciò che lo circonda. Il suo incontro con Filippo lo trasforma: scopre che il padre è coinvolto in un crimine, che il mondo adulto è corrotto, che l'amicizia e la lealtà possono valere più dell'appartenenza familiare. La sua scelta finale — correre nella notte per salvare Filippo — è l'atto con cui Michele abbandona definitivamente l'infanzia come condizione di inconsapevolezza.</p>
+
+    <p>Sul piano simbolico, Michele incarna il <strong>contraltare morale degli adulti</strong>. Se il padre, gli zii, il vecchio Sergio sono accomunati dalla logica del denaro, della sopravvivenza e della codardia, Michele è governato da qualcosa di anteriore e più puro: il senso istintivo di ciò che è giusto. In questo senso, il personaggio ha una valenza quasi archetipica: è l'innocente che riconosce il male e sceglie di opporvisi.</p>
+  </section>
+
+  <!-- V. DIALOGO -->
+  <section class="section reveal" id="dialogo">
+    <span class="section-number">Sezione V · ~90 secondi</span>
+    <h2 class="section-title">Analisi di un dialogo significativo</h2>
+
+    <p>Il dialogo che intendo analizzare è quello tra Michele e Filippo nel buco, durante una delle prime visite del protagonista al bambino sequestrato. In questa scena Michele ha deciso di rivelare a Filippo che sua madre è viva — l'ha vista al telegiornale — e tenta di dargli speranza.</p>
+
+    <div class="dialogue-block">
+      <strong>Contesto</strong>: Filippo è rannicchiato sotto la coperta, incatenato, cieco per via delle croste di sangue sulle palpebre.<br><br>
+      «Allora... Tua madre dice che ti vuole bene. E dice che le manchi. Lo ha detto ieri alla televisione...»<br>
+      «La mia mamma è morta.»<br>
+      «Come è morta?»<br>
+      «La mia mamma è morta.»<br>
+      «Ma che dici? E' viva. L'ho vista io, alla televisione...»<br>
+      «No, è morta.»<br><br>
+      <strong>Poi, più avanti:</strong><br><br>
+      «E perché non viene a prendermi?»<br>
+      «Non lo so.»<br>
+      «Perché non viene qui?»<br>
+      «Non lo so.»<br>
+      «E perché io sto qui?»<br>
+      «Non lo so. Poi ha detto, così piano che non poteva sentirmi: Mio papà ti ci ha messo qua.»
+    </div>
+
+    <p>Questo dialogo è straordinario per la sua <strong>economia di mezzi e la ricchezza di significati impliciti</strong>. Il ritmo è quello di un canto liturgico: la ripetizione di «La mia mamma è morta» da parte di Filippo non è una risposta alle parole di Michele, ma una difesa psicologica — la mente del bambino traumatizzato ha costruito una realtà alternativa dove tutti sono morti, perché è più sopportabile della verità (che tutti lo hanno abbandonato). La morte come protezione dall'abbandono è un insight psicologico potentissimo, reso con la sintassi secca di un bambino di nove anni che lo esprime a un altro bambino di nove anni senza comprenderlo pienamente.</p>
+
+    <p>Sul piano delle <strong>scelte linguistiche</strong>, Ammaniti usa la ripetizione come figura retorica strutturante: «Non lo so» compare tre volte consecutivamente, fino alla rottura del ritmo con la rivelazione mormorata — «Mio papà ti ci ha messo qua» — pronunciata così piano che Filippo non riesce a sentirla. Questa scelta è geniale: la verità viene detta, ma non a Filippo. Viene detta al lettore. E al lettore questo sussurro arriva come un colpo.</p>
+
+    <p>Il dialogo costruisce anche il <strong>rapporto tra i due personaggi</strong>: non è quello tra eroe e vittima, ma tra due bambini ugualmente smarriti, che si cercano nel buio e trovano nell'altro una forma di salvezza temporanea.</p>
+  </section>
+
+  <!-- VI. BRANO -->
+  <section class="section reveal" id="brano">
+    <span class="section-number">Sezione VI · ~90 secondi</span>
+    <h2 class="section-title">Analisi del brano scelto</h2>
+
+    <p>Il brano che ho scelto di commentare è quello che chiude il romanzo: Michele, nella notte, è riuscito a portare Filippo fuori dal buco nella fattoria di Melichetti, ma non riesce a risalire per via della caviglia lesionata. È lì che lo trova suo padre.</p>
+
+    <div class="quote-block">
+      <p>«Papà, sono io, sono Miche... / Poi c'è stato il bianco. [...] / Ho aperto gli occhi. / La gamba mi faceva male. Non era la gamba di prima. L'altra. Il dolore era una pianta rampicante. Un filo spinato che si attorciglia alle budella. [...] / Non voglio morire. Non voglio.»</p>
+      <span class="quote-source">Cap. 10 — finale del romanzo</span>
+    </div>
+
+    <p>In questo passaggio confluiscono tutti i temi centrali del romanzo. Il primo e più evidente è quello del <strong>conflitto tra innocenza e colpa</strong>: Michele viene sparato dal padre — l'ambiguità del testo lascia aperta la questione se il padre lo abbia riconosciuto o meno prima di premere il grilletto — e questa ambiguità è il cuore morale del romanzo. Se il padre sapeva, il gesto è criminalità pura. Se non sapeva, è tragedia. In entrambi i casi, è il prezzo che l'innocenza paga per opporsi al mondo dei grandi.</p>
+
+    <p>Il tema dell'<strong>identità</strong> emerge con forza nella frase incompiuta: «Papà, sono io, sono Miche...» — Michele si sta nominando, sta cercando di esistere come figlio agli occhi del padre, di far valere il legame di sangue contro la logica del crimine. Il fatto che la frase venga interrotta dal «bianco» — l'eufemismo visivo per lo sparo o la perdita di coscienza — è uno dei gesti letterari più potenti del romanzo.</p>
+
+    <p>Il brano è anche un nodo fondamentale sul tema della <strong>memoria e del trauma</strong>: sappiamo sin dall'inizio che Michele parla da adulto, il che significa che sopravvive. Ma il finale costruisce una sospensione temporale — «Poi c'è stato il bianco» — che è al tempo stesso morte simbolica dell'infanzia e nascita di una coscienza adulta segnata dal dolore.</p>
+
+    <p>Infine, la metafora del dolore come «pianta rampicante» e «filo spinato che si attorciglia alle budella» è un esempio perfetto dello stile ammanitiano: immagine concreta, fisica, quasi violenta — coerente con la voce del narratore — ma capace di trasferirsi immediatamente sul piano emotivo. Il dolore del corpo e il dolore dell'anima diventano inseparabili.</p>
+  </section>
+
+  <!-- VII. CONCLUSIONE -->
+  <section class="section reveal" id="conclusione">
+    <span class="section-number">Sezione VII · ~30 secondi</span>
+    <h2 class="section-title">Conclusione</h2>
+
+    <p><em>Io non ho paura</em> è un romanzo che funziona su molteplici livelli simultaneamente: è un romanzo di formazione, una storia di amicizia, un thriller familiare e una riflessione morale sulla complicità. Ma ciò che lo rende davvero indimenticabile è la sua voce: Michele Amitrano, con la sua sintassi povera e la sua coscienza intatta, ci restituisce la convinzione che l'etica non si apprende — si porta dentro, come una luce che il buio può oscurare ma non spegnere.</p>
+
+    <div class="highlight-box">
+      <span class="hl-title">Chiusura</span>
+      <p>In un'estate di caldo e silenzio, in mezzo al grano dorato del Sud, un bambino di nove anni ha scelto di non avere paura. Questo gesto — così piccolo, così enorme — è ancora oggi il motivo per cui questo romanzo rimane necessario.</p>
+    </div>
+
+    <div class="timing-bar">
+      <span class="timing-icon">⏱</span>
+      <span class="timing-text">Stima totale di esposizione: <strong>9 minuti e 30 secondi</strong> a ritmo controllato, con pause espressive. Margine di sicurezza rispetto ai 10 minuti massimi.</span>
+    </div>
+  </section>
+
+  <!-- EXTRA -->
+  <section class="section reveal" id="extra">
+    <div class="extras">
+      <span class="extras-title">Materiale supplementare — Domande e frasi ad effetto</span>
+
+      <h3 style="font-size:1.1rem; font-weight:300; font-style:italic; color:var(--gold); margin-bottom:2rem;">5 Possibili domande del docente con risposte</h3>
+
+      <div class="qa-item">
+        <div class="qa-q">In che modo il romanzo riflette il contesto storico e sociale dell'Italia del 1978?</div>
+        <div class="qa-a">Il 1978 non è una data casuale: è l'anno del rapimento Moro e del più alto punto di tensione degli Anni di Piombo. Ammaniti colloca la vicenda in questa data per creare una risonanza implicita tra il sequestro di Filippo — figlio di una famiglia borghese del Nord — e il clima di violenza politica che attraversava il paese. Il romanzo allude anche alla povertà del Mezzogiorno come contesto in cui uomini disperati accettano di partecipare a crimini non per natura malvagia, ma per necessità economica e subalternità sociale — il padre di Michele ne è l'esempio più doloroso.</div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">Quale funzione narrativa ha la figura del padre di Michele?</div>
+        <div class="qa-a">Il padre è la figura più tragica del romanzo, non il villain. Ammaniti lo costruisce come un uomo che ama il figlio ma che è già intrappolato in una logica di sopravvivenza che lo ha corrotto. La sua doppiezza — tenero con Michele, complice nel sequestro — rappresenta la degradazione morale di chi sceglie il compromesso. Il momento finale, quando spara a Michele senza riconoscerlo o scegliendo di non riconoscerlo, è la conseguenza estrema di questa deriva.</div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">Quali elementi fanno di questo romanzo un testo di formazione?</div>
+        <div class="qa-a">Il <em>Bildungsroman</em> classico prevede che il protagonista acquisisca conoscenza del mondo attraverso un'esperienza che lo trasforma irreversibilmente. Michele entra in quel buco bambino e ne esce — metaforicamente — adulto: ha conosciuto la corruzione, ha scoperto che il padre è capace di crimini, ha scelto nonostante tutto di agire secondo coscienza. La perdita dell'innocenza è il nucleo del romanzo di formazione, e qui avviene nella forma più lacerante possibile: attraverso un gesto d'amore che quasi costa la vita.</div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">Come si configura il rapporto tra Michele e Filippo?</div>
+        <div class="qa-a">Il loro rapporto è speculare e complementare: Michele ha tutto ciò che Filippo ha perso — libertà, corpo, movimento — mentre Filippo ha qualcosa che Michele non possiede ancora, ossia la consapevolezza che il mondo può essere radicalmente ingiusto. Ammaniti li costruisce come doppi: stessa età, stessa classe scolastica, stessa data di nascita prossima. Questa simmetria suggerisce che avrebbero potuto essere intercambiabili — e che la sorte di Filippo è la sorte che il caso avrebbe potuto riservare a Michele.</div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">Che ruolo svolge il paesaggio nel romanzo?</div>
+        <div class="qa-a">Il paesaggio — il grano, il sole, il caldo — non è sfondo ma co-protagonista. Ha una funzione sia realistica che simbolica: il caldo oppressivo rispecchia l'atmosfera soffocante della comunità, il grano nasconde e rivela allo stesso tempo, le colline creano una geografia dell'isolamento. Ma il paesaggio funziona anche come estensione dello stato mentale di Michele: quando il protagonista è angosciato, la pianura sembra incombere; quando è sereno, il sole è descritto quasi con tenerezza. È una forma di paesaggio empatico — ciò che i romantici chiamavano <em>pathetic fallacy</em>.</div>
+      </div>
+
+      <h3 style="font-size:1.1rem; font-weight:300; font-style:italic; color:var(--gold); margin: 2.5rem 0 1.5rem;">3 Frasi ad effetto da usare durante l'orale</h3>
+
+      <div class="phrases-grid">
+        <div class="phrase-card">«Ammaniti ci consegna un romanzo dove il vero orrore non è il bambino nel buco, ma gli adulti che ce l'hanno messo.»</div>
+        <div class="phrase-card">«In Michele Amitrano, l'innocenza non è ingenuità: è resistenza. È la scelta di non sapere farne a meno.»</div>
+        <div class="phrase-card">«Il titolo del romanzo è una menzogna necessaria: Michele ha paura di tutto, ma sceglie di agire come se non l'avesse — e in questo gesto sta tutta la sua grandezza morale.»</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <em>Presentazione elaborata per esposizione orale · Niccolò Ammaniti, Io non ho paura, Einaudi 2001</em>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
